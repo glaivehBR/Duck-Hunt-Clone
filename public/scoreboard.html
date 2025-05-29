@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Duck Hunt NES - Tabela de Pontuação</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #001122, #003355);
+      color: #fff;
+      font-family: 'Press Start 2P', monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      user-select: none;
+    }
+
+    h1 {
+      margin-top: 0;
+      margin-bottom: 40px;
+      text-shadow: 2px 2px #004477;
+      text-align: center;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 600px;
+      margin-bottom: 30px;
+      box-shadow: 4px 4px #002244;
+      border-radius: 6px;
+      overflow: hidden;
+      background-color: #001833;
+    }
+
+    th, td {
+      padding: 12px 20px;
+      border-bottom: 1px solid #004477;
+      text-align: center;
+    }
+
+    th {
+      background-color: #003366;
+      font-weight: bold;
+      text-shadow: 1px 1px #002244;
+    }
+
+    tr:hover {
+      background-color: #004080;
+      cursor: default;
+    }
+
+    button {
+      background: #0077cc;
+      border: 4px solid #004477;
+      color: white;
+      font-size: 16px;
+      padding: 15px 30px;
+      margin: 10px;
+      cursor: pointer;
+      box-shadow: 4px 4px #002244;
+      transition: all 0.1s ease-in-out;
+      border-radius: 4px;
+      user-select: none;
+      align-self: center;
+    }
+
+    button:hover {
+      background: #3399ff;
+      box-shadow: 2px 2px #002244;
+      transform: translate(1px, 1px);
+    }
+
+    footer {
+      position: fixed;
+      bottom: 20px;
+      font-size: 12px;
+      color: #666;
+      user-select: none;
+      width: 100%;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>Tabela de Pontuação</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Pontuação</th>
+        <th>Data</th>
+      </tr>
+    </thead>
+    <tbody id="scoreTableBody">
+      <!-- Pontuações vão aqui -->
+    </tbody>
+  </table>
+
+  <button onclick="voltarMenu()">Voltar ao Menu</button>
+
+  <footer>© 2025 Glaive Helles - Projeto Nintendinho PWEB 2025.1</footer>
+
+  <script>
+    async function carregarScores() {
+      try {
+        const res = await fetch('/scoreboard/api');
+        const scores = await res.json();
+
+        const tbody = document.getElementById('scoreTableBody');
+        tbody.innerHTML = '';
+
+        scores.forEach(score => {
+          const tr = document.createElement('tr');
+          const dataFormatada = new Date(score.date).toLocaleDateString('pt-BR', {
+            day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
+          });
+
+          tr.innerHTML = `
+            <td>${score.name}</td>
+            <td>${score.score}</td>
+            <td>${dataFormatada}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        alert('Erro ao carregar a tabela de pontuações.');
+        console.error(err);
+      }
+    }
+
+    function voltarMenu() {
+      window.location.href = '/';
+    }
+
+    window.onload = carregarScores;
+  </script>
+</body>
+</html>
